@@ -351,6 +351,9 @@ class Continuous_CartPoleEnv_V1(gym.Env[np.ndarray, Union[int, np.ndarray]]):
         self.action_space = spaces.Box(-force_range, force_range, dtype=np.float32)
         self.observation_space = spaces.Box(-high, high, dtype=np.float32)
 
+        self.act_std = force_range * 0.1
+        self.obs_std = np.min(high * 0.1)
+
         self.screen = None
         self.clock = None
         self.isopen = True
@@ -365,6 +368,7 @@ class Continuous_CartPoleEnv_V1(gym.Env[np.ndarray, Union[int, np.ndarray]]):
         assert self.state is not None, "Call reset before using step method."
         x, x_dot, theta, theta_dot = self.state
         # force = self.force_mag if action == 1 else -self.force_mag
+        action += np.random.randn() * self.act_std
         force = action * self.force_mag
         costheta = math.cos(theta)
         sintheta = math.sin(theta)
@@ -390,6 +394,10 @@ class Continuous_CartPoleEnv_V1(gym.Env[np.ndarray, Union[int, np.ndarray]]):
             theta_dot = theta_dot + self.tau * thetaacc
             theta = theta + self.tau * theta_dot
 
+        x += np.random.randn() * self.obs_std
+        x_dot += np.random.randn() * self.obs_std
+        theta += np.random.randn() * self.obs_std
+        theta_dot += np.random.randn() * self.obs_std
         self.state = (x, x_dot, theta, theta_dot)
 
         done = bool(
