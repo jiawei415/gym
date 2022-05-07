@@ -314,7 +314,7 @@ class Continuous_CartPoleEnv_V1(gym.Env[np.ndarray, Union[int, np.ndarray]]):
 
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 50}
 
-    def __init__(self):
+    def __init__(self, noise_std=0.0):
         self.gravity = 9.8
         self.masscart = 1.0
         self.masspole = 0.1
@@ -351,8 +351,8 @@ class Continuous_CartPoleEnv_V1(gym.Env[np.ndarray, Union[int, np.ndarray]]):
         self.action_space = spaces.Box(-force_range, force_range, dtype=np.float32)
         self.observation_space = spaces.Box(-high, high, dtype=np.float32)
 
-        self.act_std = force_range * 0.1
-        self.obs_std = np.min(high * 0.1)
+        self.act_std = force_range * noise_std
+        self.obs_std = np.min(high * noise_std)
 
         self.screen = None
         self.clock = None
